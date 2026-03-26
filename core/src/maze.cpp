@@ -4,25 +4,18 @@
 #include <ctime>
 #include <queue>
 
-#include "../include/maze.h"
+#include "..\include\maze.h"
+#include "..\include\constants.h"
 
 using Coord = std::pair<int32_t, int32_t>;
-
-enum Cells {
-	wall = 0,
-	path = 1,
-	start = 2,
-	end = 3,
-	boundary = -1,
-};
 
 /* -------------------------------------------------- */
 // Constructors
 Maze::Maze(int32_t s)
 	: _size(s),
-	_maze(s, std::vector<int32_t>(s, wall)),
-	endPoint(),
-	startPoint()
+	  _maze(s, std::vector<int32_t>(s, wall)),
+	  endPoint(), 
+	  startPoint()
 {
 	createLevel();
 }
@@ -89,8 +82,8 @@ void Maze::setBoundary() {
 	for (int i{ 0 }; i < this->size(); i++) {
 		this->_maze[0][i] = boundary;
 		this->_maze[i][0] = boundary;
-		this->_maze[this->_size - 1][i] = boundary;
-		this->_maze[i][this->_size - 1] = boundary;
+		this->_maze[this->_size-1][i] = boundary;
+		this->_maze[i][this->_size-1] = boundary;
 	}
 }
 
@@ -156,11 +149,11 @@ void Maze::setStartPoint() {
 		q.pop();
 
 		for (const auto& dir : directions) {
-			int y = p.first + dir.first;
-			int x = p.second + dir.second;
+			int32_t y = p.first + dir.first;
+			int32_t x = p.second + dir.second;
 
-			if ((x > 0 && x < this->_size - 1) &&
-				(y > 0 && y < this->_size - 1) &&
+			if ((x > 0 && x < this->size() - 1) &&
+				(y > 0 && y < this->size() - 1) &&
 				(distance[y][x] == -1) &&
 				(this->_maze[y][x] != wall)) 
 			{
@@ -188,10 +181,10 @@ void Maze::createLoops() {
 
 	int i = this->_size / 2;
 	while (i--) {
-		uint32_t x = dist(engine);
-		uint32_t y = dist(engine);
+		int32_t x = dist(engine);
+		int32_t y = dist(engine);
 		if (this->_maze[y][x] == wall && probability(engine) > 0.5) {
-			this->_maze[y][x] == path;
+			this->_maze[y][x] = path;
 		}
 	}
 }
@@ -227,6 +220,9 @@ void Maze::print() const {
 			else if (x == boundary) {
 				std::cout << "#";
 			}
+			else if (x == user) {
+				std::cout << "[]";
+			}
 			std::cout << " ";
 		}
 		std::cout << std::endl;
@@ -240,6 +236,16 @@ bool Maze::isPath(int32_t i, int32_t j) const {
 	return (this->_maze[i][j] == path);
 }
 
-uint32_t Maze::size() const {
+int32_t Maze::size() const {
 	return this->_size;
+}
+
+const Coordinate Maze::getStartPoint() const {
+	return this->startPoint;
+}
+
+void Maze::playerPosition(const Coordinate& pos) {
+	this->_maze[this->player.x][this->player.y] = path;
+	this->player = Coordinate(pos);
+	this->_maze[this->player.x][this->player.y] = user;
 }

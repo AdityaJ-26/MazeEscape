@@ -25,13 +25,16 @@
     <ClCompile Include="src\game.cpp" />
     <ClCompile Include="src\maze.cpp" />
     <ClCompile Include="src\objective.cpp" />
+    <ClCompile Include="src\player.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\constants.h" />
     <ClInclude Include="include\coordinate.h" />
     <ClInclude Include="include\functions.h" />
     <ClInclude Include="include\game.h" />
     <ClInclude Include="include\maze.h" />
-    <ClInclude Include="include\objectve.h" />
+    <ClInclude Include="include\objective.h" />
+    <ClInclude Include="include\player.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

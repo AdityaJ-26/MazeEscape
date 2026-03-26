@@ -33,6 +33,9 @@
     <ClCompile Include="src\objective.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\coordinate.h">
@@ -47,7 +50,13 @@
     <ClInclude Include="include\maze.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\objectve.h">
+    <ClInclude Include="include\objective.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\constants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

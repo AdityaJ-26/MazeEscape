@@ -4,12 +4,14 @@
 #include <vector>
 #include "coordinate.h"
 
-class Maze : public Coordinate {
+class Maze {
 	private:
 		std::vector<std::vector<int32_t>> _maze;
 		int32_t _size;
 		Coordinate endPoint;
 		Coordinate startPoint;
+
+		Coordinate player;
 
 	private:
 		void generate();
@@ -24,8 +26,9 @@ class Maze : public Coordinate {
 
 		void print() const;
 		bool isPath(int32_t, int32_t) const;
-		uint32_t size() const;
-
+		int32_t size() const;
+		const Coordinate getStartPoint() const;
+		void playerPosition(const Coordinate&);
 };
 
 #endif // MAZE_H
