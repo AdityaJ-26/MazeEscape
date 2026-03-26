@@ -7,6 +7,7 @@
 //#include "objective.h"
 //#include "bots.h"
 #include "player.h"
+#include "functions.h"
 
 class Game {
 	private:

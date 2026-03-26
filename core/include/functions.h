@@ -5,5 +5,6 @@
 #include "SDL.h"
 
 void init();
+bool inBound(int32_t, int32_t);
 
 #endif // FUNCTIONS_H

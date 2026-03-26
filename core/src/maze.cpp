@@ -175,18 +175,24 @@ void Maze::setStartPoint() {
 /* -------------------------------------------------- */
 // creater looping paths in maze
 void Maze::createLoops() {
-	std::default_random_engine engine(uint32_t(time(0)));
+	std::default_random_engine engine(int(time(0)));
+	std::uniform_int_distribution coordinate(1, this->size() - 2);
 	std::uniform_real_distribution<double> probability(0, 1);
-	std::uniform_int_distribution dist(1, this->_size - 2);
 
-	int i = this->_size / 2;
-	while (i--) {
-		int32_t x = dist(engine);
-		int32_t y = dist(engine);
-		if (this->_maze[y][x] == wall && probability(engine) > 0.5) {
-			this->_maze[y][x] = path;
+	int removal = this->size() * PROBABILITY_FACTOR;
+
+	// randomely generate coordinatesa and check for probability for removal of loop creating wall
+	while (removal > 0) {
+		if (probability(engine) <= PROBABILITY_FACTOR) {
+			int32_t x = coordinate(engine);
+			int32_t y = coordinate(engine);
+			if (this->removable(x, y)) {
+				this->_maze[x][y] = path;
+				removal--;
+			}
 		}
 	}
+
 }
 
 /* -------------------------------------------------- */
@@ -229,6 +235,17 @@ void Maze::print() const {
 	}
 }
 
+// check if is wall, and can connect two paths
+bool Maze::removable(const int32_t& x, const int32_t& y) const {
+	if (this->_maze[x][y] == wall) {
+		if ((this->_maze[x + 1][y] == path && this->_maze[x - 1][y] == path)
+			|| (this->_maze[x][y + 1] == path && this->_maze[x][y - 1] == path))
+		{
+			return true;
+		}
+	}
+	return false;
+}
 
 /* -------------------------------------------------- */
 // public functions

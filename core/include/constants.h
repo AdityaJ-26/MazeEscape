@@ -4,6 +4,7 @@
 constexpr int MAX_LIVES = 3;
 constexpr int32_t MAZE_SIZE = 39;
 constexpr int MAX_OBJECTIVE = 4;
+constexpr double PROBABILITY_FACTOR = 0.3;
 
 enum Movements {
 	up,

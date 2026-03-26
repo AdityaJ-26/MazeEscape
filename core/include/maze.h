@@ -20,6 +20,7 @@ class Maze {
 		void setEndPoint();
 		void setStartPoint();
 		void createLevel();
+		bool removable(const int32_t&, const int32_t&) const;
 
 	public:
 		Maze(int32_t);

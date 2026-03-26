@@ -9,7 +9,7 @@ class Coordinate {
 		int32_t y;
 		Coordinate(int32_t = 0, int32_t = 0);
 		Coordinate(const Coordinate&);
-		Coordinate(Coordinate&&);
+		Coordinate(Coordinate&&) noexcept ;
 		bool operator == (const Coordinate&) const;
 		bool operator == (Coordinate&&) const;
 		void operator = (const Coordinate&);

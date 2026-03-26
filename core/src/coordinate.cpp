@@ -6,7 +6,7 @@ Coordinate::Coordinate(int32_t x, int32_t y)
 Coordinate::Coordinate(const Coordinate& c) 
 	: x(c.x),
 	  y(c.y) { }
-Coordinate::Coordinate(Coordinate&& c)
+Coordinate::Coordinate(Coordinate&& c) noexcept
 	: x(c.x),
 	  y(c.y) { }
 bool Coordinate::operator == (const Coordinate& c) const {

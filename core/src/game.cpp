@@ -14,27 +14,28 @@ Game::Game()
 
 void Game::handleEvents() {
 	const Coordinate c = this->user->coord();
-	if (GetAsyncKeyState(0x57)) {
-		if (this->maze.isPath(c.x, c.y + 1)) {
-			this->user->move(up);
-		}
-	}
-	else if (GetAsyncKeyState(0x53)) {
-		if (this->maze.isPath(c.x , c.y - 1)) {
-			this->user->move(down);
-		}
-	}
-	else if (GetAsyncKeyState(0x41)) {
-		if (this->maze.isPath(c.x - 1, c.y)) {
-			this->user->move(left);
-		}
-	}
-	else if (GetAsyncKeyState(0x44)) {
-		if (this->maze.isPath(c.x + 1, c.y)) {
-			this->user->move(right);
-		}
-	}
+    if (GetAsyncKeyState(0x57)) {
+        if (inBound(c.x + 1, c.y) && this->maze.isPath(c.x + 1, c.y)) {
+            this->user->move(up);
+        }
+    }
+    else if (GetAsyncKeyState(0x53)) {
+        if (inBound(c.x - 1, c.y) && this->maze.isPath(c.x - 1, c.y)) {
+            this->user->move(down);
+        }
+    }
+    else if (GetAsyncKeyState(0x41)) {
+        if (inBound(c.x, c.y - 1) && this->maze.isPath(c.x, c.y - 1)) {
+            this->user->move(left);
+        }
+    }
+    else if (GetAsyncKeyState(0x44)) {
+        if (inBound(c.x, c.y + 1) && this->maze.isPath(c.x, c.y + 1)) {
+            this->user->move(right);
+        }
+    }
 }
+
 void Game::print() {
 	this->maze.print();
 }
