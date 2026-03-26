@@ -28,14 +28,14 @@ void Maze::generate() {
 
 	std::default_random_engine engine((uint32_t)time(0));
 
-	// maze start point
+	// DFS start point
 	{
 		uint32_t x, y;
 		std::uniform_int_distribution dist(1, int(this->_size - 2));
 		x = dist(engine) | 1;
 		y = dist(engine) | 1;
-		st.push({ y,x });
-		this->_maze[y][x] = path;
+		st.push({ x,y });
+		this->_maze[x][y] = path;
 	}
 
 	while (!st.empty()) {
@@ -45,36 +45,37 @@ void Maze::generate() {
 
 		// get all direction paths
 		for (const auto& dir : directions) {
-			int32_t newY = XY.first + dir.first;
-			int32_t newX = XY.second + dir.second;
+			int32_t newX = XY.first + dir.first;
+			int32_t newY = XY.second + dir.second;
 
 			if ((newX >= 0 && newX < this->_size) &&
 				(newY >= 0 && newY < this->_size) &&
-				this->_maze[newY][newX] == wall)
+				this->_maze[newX][newY] == wall)
 			{
 				paths.push_back(dir);
 			}
 		}
 
-		//chose random direction for path
+		// chose one random direction and carve path
 		if (!paths.empty()) {
 			std::uniform_int_distribution dist(0, (int)paths.size() - 1);
 			Coord way = paths[dist(engine)];
 
-			int32_t wallY = XY.first + way.first / 2;
-			int32_t wallX = XY.second + way.second / 2;
-			int32_t nY = XY.first + way.first;
-			int32_t nX = XY.second + way.second;
+			int32_t wallX = XY.first + way.first / 2;
+			int32_t wallY = XY.second + way.second / 2;
+			int32_t nX = XY.first + way.first;
+			int32_t nY = XY.second + way.second;
 
-			this->_maze[wallY][wallX] = path;
-			this->_maze[nY][nX] = path;
-			st.push({ nY, nX });
+			this->_maze[wallX][wallY] = path;
+			this->_maze[nX][nY] = path;
+			st.push({ nX, nY });
 		}
 		else {
 			st.pop();
 		}
 	}
 }
+
 
 /* -------------------------------------------------- */
 // Boundary Creation
@@ -86,6 +87,7 @@ void Maze::setBoundary() {
 		this->_maze[i][this->_size-1] = boundary;
 	}
 }
+
 
 /* -------------------------------------------------- */
 // random endpoint in maze (mostly border)
@@ -132,6 +134,7 @@ void Maze::setEndPoint() {
 	}
 }
 
+
 /* -------------------------------------------------- */
 // BFS for max length point from endpoint
 void Maze::setStartPoint() {
@@ -140,28 +143,31 @@ void Maze::setStartPoint() {
 
 	std::vector<Coord> directions{ {1,0}, {-1,0}, {0,1}, {0,-1} };
 	
-	q.push({ endPoint.y, endPoint.x });
-	distance[endPoint.y][endPoint.x] = 0;
+	q.push({ endPoint.x, endPoint.y });
+	distance[endPoint.x][endPoint.y] = 0;
 	int maxDistance = 0;
 	
 	while (!q.empty()) {
 		Coord p = q.front();
 		q.pop();
 
+		// check all path from fixed point and insert into queue
 		for (const auto& dir : directions) {
-			int32_t y = p.first + dir.first;
-			int32_t x = p.second + dir.second;
+			int32_t x = p.first + dir.first;
+			int32_t y = p.second + dir.second;
 
 			if ((x > 0 && x < this->size() - 1) &&
 				(y > 0 && y < this->size() - 1) &&
-				(distance[y][x] == -1) &&
-				(this->_maze[y][x] != wall)) 
+				(distance[x][y] == -1) &&
+				(this->_maze[x][y] != wall) &&
+				(this->_maze[x][y] != boundary))
 			{
-				q.push({ y,x });
-				distance[y][x] = distance[p.second][p.first] + 1;
+				q.push({ x,y });
+				distance[x][y] = distance[p.first][p.second] + 1;
 
-				if (distance[y][x] > maxDistance) {
-					maxDistance = distance[y][x];
+				// calculate max distance point and mark starting point
+				if (distance[x][y] > maxDistance) {
+					maxDistance = distance[x][y];
 					startPoint.x = x;
 					startPoint.y = y;
 				}
@@ -171,6 +177,7 @@ void Maze::setStartPoint() {
 	}
 	this->_maze[startPoint.x][startPoint.y] = start;
 }
+
 
 /* -------------------------------------------------- */
 // creater looping paths in maze
@@ -195,6 +202,7 @@ void Maze::createLoops() {
 
 }
 
+
 /* -------------------------------------------------- */
 // maze/level creation
 void Maze::createLevel() {
@@ -203,37 +211,8 @@ void Maze::createLevel() {
 	setEndPoint();
 	createLoops();
 	setStartPoint();
-
 }
 
-/* -------------------------------------------------- */
-// printing debug
-void Maze::print() const {
-	for (const auto& X : _maze) {
-		for (const auto& x : X) {
-			if (x == path) {
-				std::cout << " ";
-			}
-			else if (x == start) {
-				std::cout << "*";
-			}
-			else if (x == end) {
-				std::cout << "+";
-			}
-			else if (x == wall) {
-				std::cout << char(254);
-			}
-			else if (x == boundary) {
-				std::cout << "#";
-			}
-			else if (x == user) {
-				std::cout << "[]";
-			}
-			std::cout << " ";
-		}
-		std::cout << std::endl;
-	}
-}
 
 // check if is wall, and can connect two paths
 bool Maze::removable(const int32_t& x, const int32_t& y) const {
@@ -247,22 +226,32 @@ bool Maze::removable(const int32_t& x, const int32_t& y) const {
 	return false;
 }
 
+
 /* -------------------------------------------------- */
 // public functions
-bool Maze::isPath(int32_t i, int32_t j) const {
-	return (this->_maze[i][j] == path);
+enum Cells Maze::cellType(const int32_t& i,const int32_t& j) const {
+	switch (this->_maze[i][j]) {
+		case 1:
+			return path;
+		case 0:
+			return wall;
+		case 2:
+			return start;
+		case 3:
+			return end;
+		default:
+			return boundary;
+	}
 }
 
-int32_t Maze::size() const {
+const int32_t& Maze::size() const {
 	return this->_size;
 }
 
-const Coordinate Maze::getStartPoint() const {
+const Coordinate& Maze::getStartPoint() const {
 	return this->startPoint;
 }
 
-void Maze::playerPosition(const Coordinate& pos) {
-	this->_maze[this->player.x][this->player.y] = path;
-	this->player = Coordinate(pos);
-	this->_maze[this->player.x][this->player.y] = user;
+const Coordinate& Maze::getEndPoint() const {
+	return this->endPoint;
 }

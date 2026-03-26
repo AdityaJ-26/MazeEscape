@@ -3,17 +3,22 @@
 
 #include "coordinate.h"
 
-class Player {
+class Player : private Coordinate {
 	private:
-		Coordinate position;
 		Coordinate spawnPoint;
 		uint16_t lives;
 		uint16_t keyCount;
+		enum PlayerStates state;
+
 	public:
 		Player(Coordinate);
-		void move(enum Movements);
 		bool hit();
-		const Coordinate& coord() const;
+		void move(const enum Movement&);
+		Coordinate coord() const;
+		void setState(const PlayerStates&);
+		const PlayerStates& currentState() const;
+		void collectKey();
+		bool canUnlock() const;
 };
 
 #endif // PLAYER_H

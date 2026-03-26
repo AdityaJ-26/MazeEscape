@@ -12,6 +12,7 @@ class Coordinate {
 		Coordinate(Coordinate&&) noexcept ;
 		bool operator == (const Coordinate&) const;
 		bool operator == (Coordinate&&) const;
+		bool operator != (Coordinate&&) const;
 		void operator = (const Coordinate&);
 };
 

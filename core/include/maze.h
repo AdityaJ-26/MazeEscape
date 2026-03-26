@@ -11,8 +11,6 @@ class Maze {
 		Coordinate endPoint;
 		Coordinate startPoint;
 
-		Coordinate player;
-
 	private:
 		void generate();
 		void setBoundary();
@@ -24,12 +22,10 @@ class Maze {
 
 	public:
 		Maze(int32_t);
-
-		void print() const;
-		bool isPath(int32_t, int32_t) const;
-		int32_t size() const;
-		const Coordinate getStartPoint() const;
-		void playerPosition(const Coordinate&);
+		enum Cells cellType(const int32_t&, const int32_t&) const;
+		const int32_t& size() const;
+		const Coordinate& getStartPoint() const;
+		const Coordinate& getEndPoint() const;
 };
 
 #endif // MAZE_H

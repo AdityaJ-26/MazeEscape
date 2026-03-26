@@ -4,16 +4,19 @@
 #include <vector>
 #include "coordinate.h"
 #include "maze.h"
-//#include "objective.h"
+#include "key.h"
 //#include "bots.h"
 #include "player.h"
-#include "functions.h"
 
 class Game {
 	private:
 		Maze maze;
-		//std::vector<Objective*> obj;
+		std::vector<Key*> keys;
 		//std::vector<Bots*> bots;
+	private:
+		void spawnKeys();
+		bool inBound(int32_t, int32_t) const;
+		void processPlayer();
 
 	public:
 		Player* user;

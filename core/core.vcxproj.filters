@@ -21,16 +21,13 @@
     <ClCompile Include="src\coordinate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\functions.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\maze.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\objective.cpp">
+    <ClCompile Include="src\key.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\player.cpp">
@@ -41,16 +38,13 @@
     <ClInclude Include="include\coordinate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\functions.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\maze.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\objective.h">
+    <ClInclude Include="include\key.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\constants.h">
