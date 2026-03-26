@@ -1,0 +1,11 @@
+*.log
+*.tlog
+*.obj
+*.exe
+.vs/
+*.VC.db
+*.VC.opendb
+*.user
+/MazeEscape/bin
+/MazeEscape/build
+/libs
