@@ -6,6 +6,6 @@
 *.VC.db
 *.VC.opendb
 *.user
-/MazeEscape/bin
-/MazeEscape/build
+/core/bin
+/core/build
 /libs
