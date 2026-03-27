@@ -8,4 +8,5 @@
 *.user
 /core/bin
 /core/build
-/libs
+/libs/
+/bin/
