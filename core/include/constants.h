@@ -30,4 +30,11 @@ enum PlayerStates {
 	move_right,
 };
 
+enum Direction {
+	north,
+	south,
+	east,
+	west
+};
+
 #endif // CONSTANTS_H

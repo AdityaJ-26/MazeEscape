@@ -9,12 +9,13 @@ class Player : private Coordinate {
 		uint16_t lives;
 		uint16_t keyCount;
 		enum PlayerStates state;
+		enum Direction facing;
 
 	public:
 		Player(Coordinate);
 		bool hit();
 		void move(const enum Movement&);
-		Coordinate coord() const;
+		const Coordinate& coord();
 		void setState(const PlayerStates&);
 		const PlayerStates& currentState() const;
 		void collectKey();
