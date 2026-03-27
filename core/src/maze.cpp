@@ -4,8 +4,8 @@
 #include <ctime>
 #include <queue>
 
-#include "..\include\maze.h"
-#include "..\include\constants.h"
+#include "maze.h"
+#include "constants.h"
 
 using Coord = std::pair<int32_t, int32_t>;
 
