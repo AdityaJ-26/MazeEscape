@@ -1,8 +1,6 @@
 #include <iostream>
 
 #include "game.h"
-#include "maze.h"
-#include "constants.h"
 
 #include "assets.h"
 
