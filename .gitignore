@@ -1,5 +1,6 @@
 .vs/
 
+*.rc
 *.log
 *.tlog
 *.obj
@@ -7,6 +8,7 @@
 *.VC.db
 *.VC.opendb
 *.user
+*.vcxproj.filters
 
 /core/bin
 /core/build

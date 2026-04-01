@@ -12,25 +12,25 @@ class Game {
 		Maze maze;
 		std::vector<Key*> keys;
 		//std::vector<Bots*> bots;
-		Surfaces* surfaces;
-		SDL_Window* window;
+		Player* user;
+		App* app;
+		Texture* textures;
 
 	private:
 		void spawnKeys();
-		bool inBound(int32_t, int32_t) const;
 		void processPlayer();
 		bool isMovable(int32_t, int32_t) const;
 
 	public:
-		Player* user;
 		bool running;
 	
 	public:
 		Game();
 		void handleEvents();
 		void render();
+		void render(int);
 		void update();
-		void init();
+		~Game();
 };
 
 #endif // !GAME_H

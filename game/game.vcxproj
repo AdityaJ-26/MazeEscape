@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -27,11 +27,15 @@
       <Project>{4be5bdba-ee7a-7e76-2031-5d7a32151460}</Project>
     </ProjectReference>
     <ProjectReference Include="..\render\render.vcxproj">
-      <Project>{58d1ebb3-48a8-49c4-957a-962de7697751}</Project>
+      <Project>{7f38de63-8acb-40e9-9d29-a85205d04b2a}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="resource.h" />
     <ClInclude Include="src\game.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="game.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -94,20 +98,21 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)bin\</OutDir>
     <IntDir>$(ProjectDir)build\intermediates\debug\</IntDir>
-    <IncludePath>$(ProjectDir)src;$(SolutionDir)render;$(SolutionDir)libs\SDL2\include;$(SolutionDir)core</IncludePath>
-    <LibraryPath>$(SolutionDir)libs\SDL2\lib\x64\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)render;$(SolutionDir)assets;$(SolutionDir)core\include;$(ProjectDir)src;$(SolutionDir)libs\SDL2_image\include;$(SolutionDir)core;$(SolutionDir)libs\SDL2\include\</IncludePath>
+    <LibraryPath>$(SolutionDir)libs\SDL2_image\lib\x64\;$(SolutionDir)libs\SDL2\lib\x64\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)bin\</OutDir>
     <IntDir>$(SolutionDir)build\intermediates\release</IntDir>
-    <IncludePath>$(ProjectDir)src;$(SolutionDir)render;$(SolutionDir)libs\SDL2\include;$(SolutionDir)core</IncludePath>
+    <IncludePath>
+    </IncludePath>
     <LibraryPath>$(SolutionDir)libs\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)bin\</OutDir>
     <IntDir>$(ProjectDir)build\intermediates\release\</IntDir>
-    <IncludePath>$(ProjectDir)src;$(SolutionDir)render;$(SolutionDir)libs\SDL2\include;$(SolutionDir)core</IncludePath>
-    <LibraryPath>$(SolutionDir)libs\SDL2\lib\x64\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)render\include;$(SolutionDir)render;$(SolutionDir)assets;$(SolutionDir)core\include;$(ProjectDir)src;$(SolutionDir)libs\SDL2_image\include;$(SolutionDir)core;$(SolutionDir)libs\SDL2\include\</IncludePath>
+    <LibraryPath>$(SolutionDir)libs\SDL2_image\lib\x64\;$(SolutionDir)libs\SDL2\lib\x64\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -116,7 +121,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)core\include;$(SolutionDir)render\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)core\include;$(ProjectDir)src;$(SolutionDir)libs\SDL2_image\include;$(SolutionDir)core;$(SolutionDir)libs\SDL2\include\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -132,7 +137,8 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)core\include;$(SolutionDir)render\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -146,13 +152,20 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)core\include;$(SolutionDir)render\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y "$(SolutionDir)libs\SDL2\lib\x64\SDL2.dll" "$(OutDir)"
+copy /Y "$(SolutionDir)libs\SDL2_image\lib\x64\SDL2_image.dll" "$(OutDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -163,13 +176,20 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)core\include;$(SolutionDir)render\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y "$(SolutionDir)libs\SDL2\lib\x64\SDL2.dll" "$(OutDir)"
+copy /Y "$(SolutionDir)libs\SDL2_image\lib\x64\SDL2_image.dll" "$(OutDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

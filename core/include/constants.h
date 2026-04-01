@@ -2,7 +2,7 @@
 #define CONSTANTS_H
 
 constexpr int32_t MAX_LIVES = 3;
-constexpr int32_t MAZE_SIZE = 39;
+constexpr int32_t MAZE_SIZE = 29;
 constexpr int32_t MAX_KEYS = 4;
 constexpr double PROBABILITY_FACTOR = 0.3;
 

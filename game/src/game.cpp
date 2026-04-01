@@ -1,68 +1,39 @@
 #include <iostream>
-#include <Windows.h>
 #include <random>
 
 #include "game.h"
 
+/* -------------------------------------------------- */
+// Constructor | Destructor
+/* -------------------------------------------------- */
 Game::Game() :
 	maze(MAZE_SIZE),
 	running(true),
 	user(new Player(this->maze.getStartPoint())),
 	keys(MAX_KEYS, nullptr),
-	surfaces(nullptr),
-	window(nullptr)
+	app(new App()),
+	textures(new Texture())
 {
 	spawnKeys();
-	init();
+	app->App_Init();
+	textures->load(app->renderer);
+}
+
+Game::~Game() {
+	for (auto& key : keys) {
+		delete key;
+		key = nullptr;
+	}
+	delete user;
+	user = nullptr;
+	delete textures;
+	delete app;
 }
 
 
-bool Game::inBound(int32_t x, int32_t y) const {
-	return ((x >= 0 && x < MAZE_SIZE) && (y >= 0 && y < MAZE_SIZE));
-}
-
-
-// input handling with bound checking
-//void Game::handleEvents() {
-//	const Coordinate c = this->user->coord();
-//	// w
-//	if (GetAsyncKeyState(0x57)) {
-//		if (inBound(c.x + 1, c.y) && 
-//			(this->maze.cellType(c.x - 1, c.y) != wall &&
-//			this->maze.cellType(c.x - 1, c.y) != boundary))
-//		{
-//			this->user->setState(move_up);
-//		}
-//	}
-//	// a
-//	else if (GetAsyncKeyState(0x41)) {
-//		if (inBound(c.x, c.y - 1) &&
-//			(this->maze.cellType(c.x, c.y - 1) != wall &&
-//			this->maze.cellType(c.x, c.y - 1) != boundary)) 
-//		{
-//			this->user->setState(move_left);
-//		}
-//	}
-//	// s
-//	else if (GetAsyncKeyState(0x53)) {
-//		if (inBound(c.x - 1, c.y) && 
-//			(this->maze.cellType(c.x + 1, c.y) != wall &&
-//			this->maze.cellType(c.x + 1 , c.y) != boundary))
-//		{
-//			this->user->setState(move_down);
-//		}
-//	}
-//	// d
-//	else if (GetAsyncKeyState(0x44)) {
-//		if (inBound(c.x, c.y + 1) && 
-//			(this->maze.cellType(c.x, c.y + 1) != wall &&
-//			this->maze.cellType(c.x, c.y + 1) != boundary)) 
-//		{
-//			this->user->setState(move_right);
-//		}
-//	}
-//}
-
+/* -------------------------------------------------- */
+// Input
+/* -------------------------------------------------- */
 void Game::handleEvents() {
 	SDL_Event event;
 	while (SDL_PollEvent(&event)) {
@@ -72,22 +43,22 @@ void Game::handleEvents() {
 		}
 		else if (event.type == SDL_KEYDOWN) {
 			switch (event.key.keysym.sym) {
-				case SDLK_w:
-					if (isMovable(c.x + 1, c.y)) {
+				case SDLK_UP:
+					if (isMovable(c.x - 1, c.y)) {
 						this->user->setState(move_up);
 					}
 					break;
-				case SDLK_a:
+				case SDLK_LEFT:
 					if (isMovable(c.x, c.y - 1)) {
 						this->user->setState(move_left);
 					}
 					break;
-				case SDLK_s:
+				case SDLK_DOWN:
 					if (isMovable(c.x + 1, c.y)) {
 						this->user->setState(move_down);
 					}
 					break;
-				case SDLK_d:
+				case SDLK_RIGHT:
 					if (isMovable(c.x, c.y + 1)) {
 						this->user->setState(move_right);
 					}
@@ -95,12 +66,17 @@ void Game::handleEvents() {
 				case SDLK_ESCAPE:
 					this->running = false;
 					break;
+				case SDLK_SPACE:
+					this->user->setState(interacting);
 			}
 		}
 	}
 }
 
 
+/* -------------------------------------------------- */
+// Rendering
+/* -------------------------------------------------- */
 void Game::render() {
 	for (int32_t i{ 0 }; i < MAZE_SIZE; i++) {
 		for (int32_t j{ 0 }; j < MAZE_SIZE; j++) {
@@ -125,19 +101,19 @@ void Game::render() {
 			Cells c = this->maze.cellType(i, j);
 			switch (c) {
 				case path:
-					std::cout << " ";
+					//std::cout << " ";
 					break;
 				case wall:
-					std::cout << char(254);
+					//std::cout << char(254);
 					break;
 				case start:
-					std::cout << "+";
+					//std::cout << "+";
 					break;
 				case end:
 					std::cout << "*";
 					break;
 				case boundary:
-					std::cout << "#";
+					//std::cout << "#";
 					break;
 			}
 
@@ -146,31 +122,15 @@ void Game::render() {
 		}
 		std::cout << std::endl;
 	}
-	SDL_UpdateWindowSurface(window);
 }
 
 
+/* -------------------------------------------------- */
+// Update | Processing
+/* -------------------------------------------------- */
 void Game::update() {
 	processPlayer();
 }
-
-
-void Game::spawnKeys() {
-	std::default_random_engine engine(int(time(0)));
-	std::uniform_int_distribution dist(1, this->maze.size() - 2);
-
-	int32_t count = 0;
-	while (count < MAX_KEYS) {
-		int32_t x = dist(engine);
-		int32_t y = dist(engine);
-		if (this->maze.cellType(x, y) == path &&
-			this->user->coord() != Coordinate{ x, y })
-		{
-			keys[count++] = new Key{ x, y };
-		}
-	}
-}
-
 
 void Game::processPlayer() {
 	PlayerStates state = this->user->currentState();
@@ -211,32 +171,70 @@ void Game::processPlayer() {
 }
 
 
-void Game::init() {
+/* -------------------------------------------------- */
+// Spawn
+/* -------------------------------------------------- */
+void Game::spawnKeys() {
+	std::default_random_engine engine(int(time(0)));
+	std::uniform_int_distribution dist(1, this->maze.size() - 2);
 
-	surfaces = new Surfaces();
-
-	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-		std::cerr << "_lib_error : " << SDL_GetError() << std::endl;
-		exit(-1);
-	}
-	else {
-		window = SDL_CreateWindow("MazeEscape.exe", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 480, SDL_WINDOW_SHOWN);
-		if (window == nullptr) {
-			std::cerr << "_initialising_error : " << SDL_GetError() << std::endl;
-			exit(-1);
-		}
-		else {
-			surfaces->windowSurface = SDL_GetWindowSurface(window);
+	int32_t count = 0;
+	while (count < MAX_KEYS) {
+		int32_t x = dist(engine);
+		int32_t y = dist(engine);
+		if (this->maze.cellType(x, y) == path &&
+			this->user->coord() != Coordinate{ x, y })
+		{
+			keys[count++] = new Key{ x, y };
 		}
 	}
 }
 
+
+/* -------------------------------------------------- */
+// Checks
+/* -------------------------------------------------- */
 bool Game::isMovable(int32_t x, int32_t y) const {
-	if (inBound(x, y) &&
-	   (this->maze.cellType(x, y) != wall &&
-		this->maze.cellType(x, y) != boundary))
-	{
-		return true;
+	if (this->maze.cellType(x, y) != wall &&
+		this->maze.cellType(x, y) != boundary)
+		{
+			return true;
 	}
 	return false;
+}
+
+
+/* -------------------------------------------------- */
+// Init | Assets | Window | Renderer
+/* -------------------------------------------------- */
+void Game::render(int) {
+	
+	SDL_Rect* rect = new SDL_Rect{};
+	rect->h = TILE_SIZE;
+	rect->w = TILE_SIZE;
+
+	SDL_RenderClear(app->renderer);
+
+	for (int i{ 0 }; i < this->maze.size(); i++) {
+		for (int j{ 0 }; j < this->maze.size(); j++) {
+			rect->x = j * TILE_SIZE;
+			rect->y = i * TILE_SIZE;
+			if (this->user->coord() == Coordinate{ i, j }) {
+				app->render(textures->player, rect);
+			}
+			else if (this->maze.cellType(i, j) == wall) {
+				app->render(textures->wall, rect);
+			}
+			else if (this->maze.cellType(i, j) == path) {
+				app->render(textures->path, rect);
+			}
+			for (const auto& key : keys) {
+				if ( key != nullptr && key->coord() == Coordinate{i, j}) {
+					app->render(textures->key, rect);
+					break;
+				}
+			}
+		}
+	}
+	SDL_RenderPresent(app->renderer);
 }
