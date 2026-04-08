@@ -1,13 +1,13 @@
-#ifndef COORDINATE_H
-#define COORDINATE_H
+#ifndef COORDINATES_H
+#define COORDINATES_H
 
 #include <cstdint>
 
 class Coordinate {
 	public:
-		int32_t x;
-		int32_t y;
-		Coordinate(int32_t = 0, int32_t = 0);
+		double x;
+		double y;
+		Coordinate(double = 0, double = 0);
 		Coordinate(const Coordinate&);
 		Coordinate(Coordinate&&) noexcept ;
 		bool operator == (const Coordinate&) const;
@@ -17,4 +17,4 @@ class Coordinate {
 };
 
 
-#endif // COORDINATE_H
+#endif // COORDINATES_H

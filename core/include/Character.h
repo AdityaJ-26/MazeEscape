@@ -1,25 +1,29 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include "coordinate.h"
+#include "Coordinates.h"
 
-class Player : private Coordinate {
+
+class Character : private Coordinate {
 	private:
 		Coordinate spawnPoint;
 		int32_t lives;
-		int32_t keyCount;
+		int32_t keyCollected;
 		enum PlayerStates state;
-		enum Direction facing;
+		enum Direction direction;
 
 	public:
-		Player(Coordinate);
+		Character(const Coordinate&);
 		const Coordinate& coord();
 		void setState(const PlayerStates&);
 		const PlayerStates& currentState() const;
-		void move(const enum Movement&);
-		bool hit();
+		void setDirection(const Direction&);
+		const Direction& facing() const;
+		void move(const double&);
+		void hit();
 		void collectKey();
 		bool canUnlock() const;
+		const int32_t& livesCount() const;
 };
 
 #endif // PLAYER_H

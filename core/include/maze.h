@@ -2,7 +2,7 @@
 #define MAZE_H
 
 #include <vector>
-#include "coordinate.h"
+#include "Coordinates.h"
 
 class Maze {
 	private:

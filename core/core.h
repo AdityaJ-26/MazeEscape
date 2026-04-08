@@ -2,10 +2,12 @@
 #define CORE_H
 
 #include "constants.h"
-#include "coordinate.h"
-#include "key.h"
-#include "maze.h"
-#include "player.h"
+#include "Coordinates.h"
+#include "Keys.h"
+#include "Maze.h"
+#include "Character.h"
+#include "Bots.h"
+#include "Physics.h"
 
 
 #endif // !CORE_H

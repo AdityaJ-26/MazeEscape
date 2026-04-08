@@ -1,7 +1,7 @@
-#ifndef OBJECTIVE_H
-#define OBJECTIVE_H
+#ifndef KEYS_H
+#define KEYS_H
 
-#include "coordinate.h"
+#include "Coordinates.h"
 
 class Key : private Coordinate {
 	public:
@@ -10,4 +10,4 @@ class Key : private Coordinate {
 		const Coordinate coord() const;
 };
 
-#endif // OBJECTIVE_H
+#endif // KEYS_H

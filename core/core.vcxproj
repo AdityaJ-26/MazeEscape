@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -19,18 +19,21 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\coordinate.cpp" />
-    <ClCompile Include="src\maze.cpp" />
-    <ClCompile Include="src\key.cpp" />
-    <ClCompile Include="src\player.cpp" />
+    <ClCompile Include="src\Bots.cpp" />
+    <ClCompile Include="src\Coordinates.cpp" />
+    <ClCompile Include="src\Maze.cpp" />
+    <ClCompile Include="src\Keys.cpp" />
+    <ClCompile Include="src\Character.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="core.h" />
+    <ClInclude Include="Core.h" />
+    <ClInclude Include="include\Bots.h" />
     <ClInclude Include="include\constants.h" />
-    <ClInclude Include="include\coordinate.h" />
-    <ClInclude Include="include\maze.h" />
-    <ClInclude Include="include\key.h" />
-    <ClInclude Include="include\player.h" />
+    <ClInclude Include="include\Coordinates.h" />
+    <ClInclude Include="include\Maze.h" />
+    <ClInclude Include="include\Keys.h" />
+    <ClInclude Include="include\Physics.h" />
+    <ClInclude Include="include\Character.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

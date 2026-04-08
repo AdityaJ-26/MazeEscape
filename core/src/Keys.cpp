@@ -1,5 +1,5 @@
-#include "key.h"
-#include "maze.h"
+#include "Keys.h"
+#include "Maze.h"
 
 #include <random>
 

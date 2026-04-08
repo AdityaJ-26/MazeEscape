@@ -1,40 +1,47 @@
-#include <iostream>
-
-#include "game.h"
-#include "render.h"
+﻿#include <iostream>
 
 #include "SDL.h"
 #include "SDL_image.h"
 
-void init();
+#include "functions.h"
+#include "GameObject.h"
 
 Game* game = nullptr;
+SDL_Window* window = nullptr;
 
-int main(int argc, char* argv[]) {
+int main(int argc, char* argv[])
+{
 
 	init();
-	game = new Game();
+	window = window_init();
+	game = new Game(window);
+	int frame = 60;
+	double frameTime = 1000.0 / frame;
+	double botDelay = 1000.0 / 24;
+	double botStart = SDL_GetTicks();
+	unsigned char currFrame = 0;
 
 	while (game->running == true) {
 
-		game->handleEvents();
-		game->render();
-		game->render(1);
-		game->update();
-		system("cls");
-	}
-	return 0;
-}
+		double start = SDL_GetTicks();
 
-void init() {
-	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-		std::cerr << "_error_SDL2_lib : " << SDL_GetError() << std::endl;
-		exit(-1);
-	}
-	else {
-		if ( !(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
-			std::cerr << "_error_image_lib : " << SDL_GetError() << std::endl;
-			exit(-1);
+		game->input();
+		game->render();
+
+		double time = SDL_GetTicks();
+		if (time - botStart > botDelay) {
+			currFrame = (currFrame + 1) % 8;
+			botStart = time;
+			game->update(currFrame);
+		}
+
+		double deltaTime = time - start;
+		if (deltaTime < frameTime) {
+			SDL_Delay(frameTime - deltaTime);
 		}
 	}
+
+	delete game;
+
+	return 0;
 }

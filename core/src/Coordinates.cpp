@@ -1,6 +1,9 @@
-#include "coordinate.h"
+#include "Coordinates.h"
 
-Coordinate::Coordinate(int32_t x, int32_t y)
+/* -------------------------------------------------- */
+// constructors
+/* -------------------------------------------------- */
+Coordinate::Coordinate(double x, double y)
 	: x(x),
 	  y(y) 
 { }
@@ -15,6 +18,10 @@ Coordinate::Coordinate(Coordinate&& c) noexcept
 	  y(c.y) 
 { }
 
+
+/* -------------------------------------------------- */
+// =, ==, != operators with rhl and lhl values
+/* -------------------------------------------------- */
 bool Coordinate::operator == (const Coordinate& c) const 
 	{ return (c.x == this->x && c.y == this->y); }
 
