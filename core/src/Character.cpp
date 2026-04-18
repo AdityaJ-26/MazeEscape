@@ -1,13 +1,13 @@
 #include "Character.h"
 #include "constants.h"
-
+#include "Physics.h"
 
 /* -------------------------------------------------- */
 // constructor
 /* -------------------------------------------------- */
-Character::Character(const Coordinate& spawn) : 
-	Coordinate(spawn),
-	spawnPoint(spawn),
+Character::Character(const float& x, const float& y) :
+	Coordinate(Coordinate{ x, y }),
+	spawnPoint(Coordinate{ x, y }),
 	lives(Constant::MAX_LIVES),
 	keyCollected(0),
 	state(idle),
@@ -18,27 +18,38 @@ Character::Character(const Coordinate& spawn) :
 /* -------------------------------------------------- */
 // move
 /* -------------------------------------------------- */
-void Character::move(const double& dt) {
-	switch (this->direction) {
-		case up:
-			this->y -= Constant::SPEED * dt;
-			return;
-		case down:
-			this->y += Constant::SPEED * dt;
-			return;
-		case left:
-			this->x -= Constant::SPEED * dt;
-			return;
-		case right:
-			this->x += Constant::SPEED * dt;
-			return;
+void Character::move(const Maze& maze, const float& dt) {
+
+	float newX = this->x;
+	float newY = this->y;
+
+	switch (direction) {
+	case up:
+		newY -= Constant::SPEED * dt;
+		break;
+	case down:
+		newY += Constant::SPEED * dt;
+		break;
+	case left:
+		newX -= Constant::SPEED * dt;
+		break;
+	case right:
+		newX += Constant::SPEED * dt;
+		break;
+	}
+
+	if (Physics::isBlocked(maze, newX, this->y) == false) {
+		this->x = newX;
+	}
+	if (Physics::isBlocked(maze, this->x, newY) == false) {
+		this->y = newY;
 	}
 }
 
 /* -------------------------------------------------- */
 // public functions
 /* -------------------------------------------------- */
-const Coordinate& Character::coord() 
+const Coordinate Character::coord() 
 	{ return Coordinate{ this->x, this->y }; }
 
 const PlayerStates& Character::currentState() const
@@ -67,6 +78,6 @@ void Character::hit() {
 	this->y = this->spawnPoint.y;
 }
 
-const int32_t& Character::livesCount() const {
+const int& Character::livesCount() const {
 	return this->lives;
 }

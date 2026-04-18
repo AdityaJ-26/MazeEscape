@@ -4,19 +4,18 @@
 #include <cstdint>
 
 namespace Constant{
-	constexpr int32_t MAX_LIVES = 3;
-	constexpr int32_t MAZE_SIZE = 39;
-	constexpr int32_t MAX_KEYS = 4;
+	constexpr unsigned char MAX_LIVES = 3;
+	constexpr unsigned char MAZE_SIZE = 39;
+	constexpr unsigned char MAX_KEYS = 4;
 	
-	constexpr double PROBABILITY_FACTOR = 0.06;
+	constexpr float PROBABILITY_FACTOR = 0.06f;
 	
-	constexpr int32_t ENTITY_WIDTH = 1;
-	constexpr int32_t ENTITY_HEIGHT = 1;
+	constexpr int SIZE = 32;
 
-	constexpr int32_t PLAYER_DISTANCE = 30;
-	constexpr double BOT_SPEED = 0.2;
+	constexpr unsigned char PLAYER_DISTANCE = 30;
+	constexpr float BOT_SPEED = 200.0f;
 
-	constexpr double SPEED = 0.5;
+	constexpr float SPEED = 300.0f;
 }
 
 enum Cells {

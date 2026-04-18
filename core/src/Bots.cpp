@@ -2,13 +2,13 @@
 #include <vector>
 
 #include "Bots.h"
-#include "constants.h"
+#include "Physics.h"
 
 
 /* -------------------------------------------------- */
 // constructor
 /* -------------------------------------------------- */
-Bot::Bot(int32_t x, int32_t y) :
+Bot::Bot(const float& x, const float& y) :
 	Coordinate(x, y),
 	direction(up)
 { }
@@ -24,8 +24,8 @@ void Bot::pathFind(const Maze& maze, const Coordinate& target) {
 	std::vector<std::vector<Coord>> parent(maze.size(), std::vector<Coord>(maze.size(), { -1, -1 }));
 
 	std::queue<Coord> q;
-	q.push({ static_cast<int32_t>(this->y), static_cast<int32_t>(this->x) });
-	visited[static_cast<int32_t>(this->y)][static_cast<int32_t>(this->x)] = true;
+	q.push({ static_cast<int>(this->y), static_cast<int>(this->x) });
+	visited[static_cast<int>(this->y)][static_cast<int>(this->x)] = true;
 
 	bool pathFound = false;
 
@@ -39,7 +39,7 @@ void Bot::pathFind(const Maze& maze, const Coordinate& target) {
 			
 			if (X > 0 && X < maze.size() - 1 &&
 				Y > 0 && Y < maze.size() - 1 &&
-				maze.cellType( X,Y ) == way &&
+				maze.cellType( X,Y ) != wall &&
 				visited[X][Y] == false)
 			{
 				visited[X][Y] = true;
@@ -62,10 +62,9 @@ void Bot::pathFind(const Maze& maze, const Coordinate& target) {
 
 		while (p.first != this->y || p.second != this->x) {
 			Coord nextP = parent[p.first][p.second];
-			const Direction& d = findDirection(p, {nextP.second, nextP.first});
-			if (d != path.back()) {
-				p = nextP;
-			}
+			const Direction& d = findDirection({nextP.second, nextP.first}, p);
+			path.push_back(d);
+			p = nextP;
 		}
 	}
 	this->direction = path.back();
@@ -76,28 +75,41 @@ void Bot::pathFind(const Maze& maze, const Coordinate& target) {
 /* -------------------------------------------------- */
 // public functions
 /* -------------------------------------------------- */
-const Coordinate& Bot::coord() const {
+const Coordinate Bot::coord() const {
 	return Coordinate{ this->x, this->y };
 }
 
-void Bot::move(const double& dt) {
+void Bot::move(const Maze& maze, const Coordinate& player, const float& dt) {
 	if (path.empty()) return;
+
+	float newX = this->x;
+	float newY = this->y;
 
 	switch (direction) {
 		case up:
-			this->y -= Constant::BOT_SPEED * dt;
+			newY -= Constant::BOT_SPEED * dt;
 			break;
 		case down:
-			this->y += Constant::BOT_SPEED * dt;
+			newY += Constant::BOT_SPEED * dt;
 			break;
 		case left:
-			this->x -= Constant::BOT_SPEED * dt;
+			newX -= Constant::BOT_SPEED * dt;
 			break;
 		case right:
-			this->x += Constant::BOT_SPEED * dt;
+			newX += Constant::BOT_SPEED * dt;
 			break;
 	}
-	path.pop_back();
+
+	if (Physics::isBlocked(maze, newX, this->y) == false) {
+		this->x = newX;
+	}
+	if (Physics::isBlocked(maze, this->x, newY) == false) {
+		this->y = newY;
+	}
+
+	if (this->x != newX && this->y != newY) {
+		this->changeDirection(maze, player);
+	}
 }
 
 const Direction& Bot::facing() const {
@@ -117,9 +129,15 @@ Direction Bot::findDirection(const Coord& p1, const Coord& p2) const {
 	else if (p1.second + 1 == p2.second) {
 		return right;
 	}
+	else {
+		return up;
+	}
 }
 
-void Bot::changeDirection() {
+void Bot::changeDirection(const Maze& maze, const Coordinate& player) {
+	if (path.empty()) {
+		this->pathFind(maze, player);
+	}
 	this->direction = path.back();
 	path.pop_back();
 }

@@ -106,7 +106,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)bin\</OutDir>
     <IntDir>$(ProjectDir)build\intermediates\debug\</IntDir>
-    <IncludePath>$(SolutionDir)render;$(SolutionDir)core\include;$(ProjectDir)include;$(SolutionDir)libs\SDL2_image\include;$(SolutionDir)core;$(SolutionDir)libs\SDL2\include\</IncludePath>
+    <IncludePath>$(SolutionDir)render\include;$(SolutionDir)render;$(SolutionDir)core\include;$(ProjectDir)include;$(SolutionDir)libs\SDL2_image\include;$(SolutionDir)core;$(SolutionDir)libs\SDL2\include\</IncludePath>
     <LibraryPath>$(SolutionDir)libs\SDL2_image\lib\x64\;$(SolutionDir)libs\SDL2\lib\x64\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

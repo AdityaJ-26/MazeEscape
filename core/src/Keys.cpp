@@ -3,7 +3,7 @@
 
 #include <random>
 
-Key::Key(int32_t x, int32_t y)
+Key::Key(const float& x, const float& y)
 	: Coordinate(x, y) 
 {}
 

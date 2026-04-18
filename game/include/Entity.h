@@ -3,9 +3,9 @@
 
 #include <vector>
 
-constexpr double MIN_DISTANCE = 20.0;
-constexpr double COLLISION_CHECK_DISTANCE = 3.0;
-constexpr double KEY_SPAWN_DISTANCE = 15.0;
+constexpr float MIN_DISTANCE = 20.0f;
+constexpr float COLLISION_CHECK_DISTANCE = 3.0f;
+constexpr float KEY_SPAWN_DISTANCE = 15.0f;
 constexpr const char* KEY_PNG_PATH = "../assets/key.png";
 constexpr const char* BOT_PNG_PATH = "../assets/bot.png";
 
@@ -17,18 +17,18 @@ constexpr const char* BOT_PNG_PATH = "../assets/bot.png";
 struct Entity {
 	std::vector<Key*> keys;
 	std::vector<Bot*> bots;
-	Texture* keyTex;
-	Texture* botTex;
+	Texture* keyTexture;
+	Texture* botTexture;
 
 	Entity(SDL_Renderer*);
 	~Entity();
 
 	void spawnBot(Map*, Player*);
 	void spawnKeys(Map*, Player*);
-	void moveBots(Map*, const double&);
+	void moveBots(Map* map, Player*, const float&);
 	void render(SDL_Renderer*, Camera*) const;
-	const double distance(const int32_t&, const int32_t&, const double&, const double&) const;
-	const double distance(const Coordinate&, const Coordinate&) const;
+	const float distance(const int&, const int&, const float&, const float&) const;
+	const float distance(const Coordinate&, const Coordinate&) const;
 };
 
 #endif // !ENTITY_H

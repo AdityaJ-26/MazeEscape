@@ -9,8 +9,8 @@ constexpr const char* WAY_PNG_PATH = "../assets/path.png";
 
 struct Map {
 	Maze* maze;
-	Texture* wallTex;
-	Texture* wayTex;
+	Texture* wallTexture;
+	Texture* wayTexture;
 
 	Map(SDL_Renderer*);
 	~Map();

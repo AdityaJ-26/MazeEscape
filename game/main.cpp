@@ -11,37 +11,33 @@ SDL_Window* window = nullptr;
 
 int main(int argc, char* argv[])
 {
-
 	init();
 	window = window_init();
 	game = new Game(window);
 	int frame = 60;
 	double frameTime = 1000.0 / frame;
-	double botDelay = 1000.0 / 24;
-	double botStart = SDL_GetTicks();
-	unsigned char currFrame = 0;
+	double start = SDL_GetTicks();
 
 	while (game->running == true) {
 
-		double start = SDL_GetTicks();
-
+		double deltaTime = SDL_GetTicks() - start;
+		start = SDL_GetTicks();
 		game->input();
-		game->render();
 
-		double time = SDL_GetTicks();
-		if (time - botStart > botDelay) {
-			currFrame = (currFrame + 1) % 8;
-			botStart = time;
-			game->update(currFrame);
-		}
-
-		double deltaTime = time - start;
+		game->update(deltaTime/1000);
 		if (deltaTime < frameTime) {
 			SDL_Delay(frameTime - deltaTime);
 		}
+
+		game->render();
+		game->render(1);
+		system("cls");
 	}
 
 	delete game;
+	SDL_DestroyWindow(window);
+	window = nullptr;
+	SDL_Quit();
 
 	return 0;
 }

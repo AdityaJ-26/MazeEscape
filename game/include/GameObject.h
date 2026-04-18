@@ -25,6 +25,7 @@ class Game {
 		~Game();
 		void update(const double&);
 		void render() const;
+		void render(int) const;
 		void input();
 };
 

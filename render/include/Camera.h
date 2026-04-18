@@ -3,20 +3,19 @@
 
 #include <cstdint>
 
-constexpr int32_t DISPLAY_TILES = 23;
+constexpr float DISPLAY_PIXELS = 600;
 
 struct Camera {
-	int32_t start_x;
-	int32_t start_y;
-	int32_t end_x;
-	int32_t end_y;
-	int32_t world_start;
-	int32_t world_end;
+	float start_x;
+	float start_y;
+	float end_x;
+	float end_y;
+	float world_end;
 
-	Camera(const int32_t&, const int32_t&);
+	Camera(const float&);
 	~Camera() = default;
 
-	void update(const double&, const double&);
+	void update(const float&, const float&);
 };
 
 

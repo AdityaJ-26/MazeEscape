@@ -9,7 +9,7 @@ void init() {
 	}
 	else {
 		if ( !(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG) ) {
-			std::cerr << "_lib_error : " << SDL_GetError() << std::endl;
+			std::cerr << "_lib_error : " << IMG_GetError() << std::endl;
 			exit(-1);
 		}
 	}
@@ -29,4 +29,5 @@ SDL_Window* window_init() {
 		std::cerr << "_window_error : " << SDL_GetError() << std::endl;
 		exit(-1);
 	}
+	return window;
 }

@@ -24,6 +24,7 @@
     <ClCompile Include="src\Maze.cpp" />
     <ClCompile Include="src\Keys.cpp" />
     <ClCompile Include="src\Character.cpp" />
+    <ClCompile Include="src\Physics.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core.h" />

@@ -5,7 +5,7 @@
 
 class Key : private Coordinate {
 	public:
-		Key(int32_t, int32_t);
+		Key(const float&, const float&);
 		~Key();
 		const Coordinate coord() const;
 };

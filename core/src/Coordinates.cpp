@@ -3,7 +3,7 @@
 /* -------------------------------------------------- */
 // constructors
 /* -------------------------------------------------- */
-Coordinate::Coordinate(double x, double y)
+Coordinate::Coordinate(const float& x, const float& y)
 	: x(x),
 	  y(y) 
 { }

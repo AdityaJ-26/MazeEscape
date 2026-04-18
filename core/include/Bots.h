@@ -8,7 +8,7 @@
 #include "Maze.h"
 #include "constants.h"
 
-using Coord = std::pair<int32_t, int32_t>;
+using Coord = std::pair<int, int>;
 
 class Bot : private Coordinate {
 	private:
@@ -19,11 +19,11 @@ class Bot : private Coordinate {
 		Direction findDirection(const Coord&, const Coord&) const;
 
 	public:
-		explicit Bot(int32_t, int32_t);
-		const Coordinate& coord() const;
+		explicit Bot(const float&, const float&);
+		const Coordinate coord() const;
 		void pathFind(const Maze&, const Coordinate&);
-		void move(const double& dt);
-		void changeDirection();
+		void move(const Maze&, const Coordinate&, const float& dt);
+		void changeDirection(const Maze&, const Coordinate&);
 		const Direction& facing() const;
 };
 

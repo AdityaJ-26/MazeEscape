@@ -6,8 +6,8 @@
 
 class Maze {
 	private:
-		std::vector<std::vector<int32_t>> _maze;
-		int32_t _size;
+		std::vector<std::vector<unsigned char>> _maze;
+		int _size;
 		Coordinate endPoint;
 		Coordinate startPoint;
 
@@ -18,12 +18,12 @@ class Maze {
 		void setEndPoint();
 		void setStartPoint();
 		void createLevel();
-		bool removable(const int32_t&, const int32_t&) const;
+		bool removable(const int&, const int&) const;
 
 	public:
-		Maze(int32_t);
-		enum Cells cellType(const int32_t&, const int32_t&) const;
-		const int32_t& size() const;
+		Maze(int);
+		enum Cells cellType(const int&, const int&) const;
+		const int& size() const;
 		const Coordinate& getStartPoint() const;
 		const Coordinate& getEndPoint() const;
 };

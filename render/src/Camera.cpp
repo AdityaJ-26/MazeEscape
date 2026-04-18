@@ -1,24 +1,37 @@
 #include "Camera.h"
 
-Camera::Camera(const int32_t& world_start, const int32_t& world_end) :
+#include <iostream>
+
+Camera::Camera(const float& world_end) :
 	start_x{ 0 },
 	start_y{ 0 },
-	end_x{ DISPLAY_TILES },
-	end_y{ DISPLAY_TILES },
-	world_start{ world_start },
+	end_x{ DISPLAY_PIXELS },
+	end_y{ DISPLAY_PIXELS },
 	world_end{ world_end }
-{ }
+{}
 
-void Camera::update(const double& x, const double& y) {
-	int32_t start_x = int32_t(x - DISPLAY_TILES / 2);
-	int32_t start_y = int32_t(y - DISPLAY_TILES / 2);
+void Camera::update(const float& x, const float& y) {
+    const int size = 32;
 
-	if (start_x < world_start) start_x = 0;
-	if (start_y < world_start) start_y = 0;
+    this->start_x = (x - size / 2) - DISPLAY_PIXELS / 2;
+    this->start_y = (y - size / 2) - DISPLAY_PIXELS / 2;
 
-	int32_t end_x = start_x + DISPLAY_TILES - 1;
-	int32_t end_y = start_y + DISPLAY_TILES - 1;
+    if (this->start_x < 0) {
+        this->start_x = 0;
+    }
+    if (this->start_y < 0) {
+        this->start_y = 0;
+    }
 
-	if (end_x >= world_end) end_x = world_end - 1;
-	if (end_y >= world_end) end_y = world_end - 1;
+    this->end_x = start_x + DISPLAY_PIXELS;
+    this->end_y = start_y + DISPLAY_PIXELS;
+
+    if (this->end_x > world_end) {
+        end_x = world_end;
+        start_x = end_x - DISPLAY_PIXELS;
+    }
+    if (this->end_y > world_end) {
+        end_y = world_end;
+        start_y = end_y - DISPLAY_PIXELS;
+    }
 }

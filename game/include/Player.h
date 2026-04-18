@@ -8,13 +8,14 @@ constexpr const char* PLAYER_PNG_PATH = "../assets/player.png";
 
 struct Player {
 	Character* character;
-	Texture* characterTex;
+	Texture* characterTexture;
 
 	Player(SDL_Renderer*, const Coordinate&);
 	~Player();
 
 	void update(enum PlayerStates);
 	void render(SDL_Renderer*, Camera* camera);
+	void move(Maze*, const float&);
 };
 
 #endif // ! USER_H
