@@ -7,18 +7,18 @@
 // constructor / destructor
 /* -------------------------------------------------- */
 Entity::Entity(SDL_Renderer* renderer) :
-	keyTexture(new Texture()),
-	botTexture(new Texture())
+	keySprite(new Sprite()),
+	botSprite(new Sprite())
 {
-	keyTexture->load(renderer, KEY_PNG_PATH);
-	botTexture->load(renderer, BOT_PNG_PATH);
+	keySprite->load(renderer, KEY_SPRITE_PATH);
+	botSprite->load(renderer, BOT_SPRITE_PATH);
 }
 
 Entity::~Entity() {
-	delete keyTexture;
-	keyTexture = nullptr;
-	delete botTexture;
-	botTexture = nullptr;
+	delete keySprite;
+	keySprite = nullptr;
+	delete botSprite;
+	botSprite = nullptr;
 	for (auto& key : keys) {
 		delete key;
 		key = nullptr;
@@ -34,10 +34,10 @@ Entity::~Entity() {
 // distance calculations
 /* -------------------------------------------------- */
 const float Entity::distance(const int& x1, const int& y1, const float& x2, const float& y2) const {
-	return sqrt(pow((x1 - x2), 2) + pow((y1 - y2), 2));
+	return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 }
 const float Entity::distance(const Coordinate& c1, const Coordinate& c2) const {
-	return sqrt(pow((c1.y - c2.y), 2) + pow((c1.y - c2.y), 2));
+	return sqrt((c1.x - c2.x) * (c1.x - c2.x) + (c1.y - c2.y) * (c1.y - c2.y));
 }
 
 
@@ -53,11 +53,12 @@ void Entity::spawnKeys(Map* map, Player* player) {
 	while (count < Constant::MAX_KEYS) {
 		int x = dist(engine);
 		int y = dist(engine);
+
+		float cx = (x * Constant::SIZE) + Constant::SIZE / 2;
+		float cy = (y * Constant::SIZE) + Constant::SIZE / 2;
 		if (map->maze->cellType(y, x) == way &&
-			distance(x, y, p.x, p.y) > KEY_SPAWN_DISTANCE)
+			distance(cx, cy, p.x, p.y) > KEY_SPAWN_DISTANCE)
 		{
-			float cx = (x * Constant::SIZE) + Constant::SIZE / 2;
-			float cy = (y * Constant::SIZE) + Constant::SIZE / 2;
 			keys.push_back(new Key(cx, cy));
 			count++;
 		}
@@ -65,20 +66,23 @@ void Entity::spawnKeys(Map* map, Player* player) {
 }
 
 void Entity::spawnBot(Map* map, Player* player) {
-	std::default_random_engine engine(static_cast<int>(time(0)));
+	std::default_random_engine engine(int(time(0)));
 	std::uniform_int_distribution dist(1, map->maze->size() - 2);
 
+	const Coordinate& c = player->character->coord();
 	while (true) {
 		int x = dist(engine);
 		int y = dist(engine);
-		const Coordinate& c = player->character->coord();
+
+		float cx = (x * Constant::SIZE) + Constant::SIZE / 2;
+		float cy = (y * Constant::SIZE) + Constant::SIZE / 2;
+
 		if (map->maze->cellType(y, x) == way &&
-			(distance(x, y, c.x, c.y) > MIN_DISTANCE))
+			(distance(cx, cy, c.x, c.y) > MIN_DISTANCE))
 		{
-			float cx = (x * Constant::SIZE) + Constant::SIZE / 2;
-			float cy = (y * Constant::SIZE) + Constant::SIZE / 2;
-			bots.push_back(new Bot(cx, cy));
-			bots.back()->pathFind(*(map->maze), player->character->coord());
+			Bot* bot = new Bot(cx, cy);
+			bots.push_back(bot);
+			bot->pathFind(*(map->maze), player->character->coord());
 			break;
 		}
 	}
@@ -89,11 +93,16 @@ void Entity::spawnBot(Map* map, Player* player) {
 /* -------------------------------------------------- */
 // render
 /* -------------------------------------------------- */
-void Entity::render(SDL_Renderer* renderer, Camera* camera) const {
+void Entity::render(SDL_Renderer* renderer, Camera* camera, const unsigned char& frame) const {
 
-	SDL_Rect rect;
-	rect.h = TILE_SIZE;
-	rect.w = TILE_SIZE;
+	SDL_Rect dest;
+	dest.h = TILE_SIZE * camera->zoom;
+	dest.w = (TILE_SIZE * camera->zoom);
+
+	SDL_Rect src;
+	src.h = TILE_SIZE;
+	src.w = TILE_SIZE;
+	src.x = (frame * TILE_SIZE);
 
 	int halfWidth = Constant::SIZE / 2;
 
@@ -107,9 +116,10 @@ void Entity::render(SDL_Renderer* renderer, Camera* camera) const {
 			continue;
 		}
 		else {
-			rect.x = static_cast<int> (k.x - camera->start_x - halfWidth);
-			rect.y = static_cast<int> (k.y - camera->start_y - halfWidth);
-			SDL_RenderCopy(renderer, keyTexture->tex, nullptr, &rect);
+			src.y = 0;
+			dest.x = int((k.x - camera->start_x - halfWidth) * camera->zoom);
+			dest.y = int((k.y - camera->start_y - halfWidth) * camera->zoom);
+			SDL_RenderCopy(renderer, keySprite->sprite, &src, &dest);
 		}
 	}
 
@@ -122,9 +132,10 @@ void Entity::render(SDL_Renderer* renderer, Camera* camera) const {
 			continue;
 		}
 		else {
-			rect.x = static_cast<int> (k.x - camera->start_x - halfWidth);
-			rect.y = static_cast<int> (k.y - camera->start_y - halfWidth);
-			SDL_RenderCopy(renderer, botTexture->tex, nullptr, &rect);
+			src.y = bot->facing() * TILE_SIZE;
+			dest.x = int((k.x - camera->start_x - halfWidth) * camera->zoom);
+			dest.y = int((k.y - camera->start_y - halfWidth) * camera->zoom);
+			SDL_RenderCopy(renderer, botSprite->sprite, &src, &dest);
 		}
 	}
 }

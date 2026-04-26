@@ -13,17 +13,17 @@ using Coord = std::pair<int, int>;
 class Bot : private Coordinate {
 	private:
 		Direction direction;
-		std::vector<Direction> path;
+		std::vector<std::pair<float, float>> path;
 
 	private:
-		Direction findDirection(const Coord&, const Coord&) const;
+		void findDirection();
+		void checkTarget(const Maze&, int&, int&, const Coordinate&) const;
 
 	public:
+		void pathFind(const Maze&, const Coordinate&);
 		explicit Bot(const float&, const float&);
 		const Coordinate coord() const;
-		void pathFind(const Maze&, const Coordinate&);
 		void move(const Maze&, const Coordinate&, const float& dt);
-		void changeDirection(const Maze&, const Coordinate&);
 		const Direction& facing() const;
 };
 

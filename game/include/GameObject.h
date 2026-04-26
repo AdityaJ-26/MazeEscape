@@ -5,7 +5,7 @@
 #include "Entity.h"
 #include "Player.h"
 
-const double botFrameTime = 24 / 1000;
+constexpr float BOT_UPDATE = 2.0f;
 
 class Game {
 	private:
@@ -24,9 +24,9 @@ class Game {
 		Game(SDL_Window* window);
 		~Game();
 		void update(const double&);
-		void render() const;
-		void render(int) const;
+		void render(const unsigned char&) const;
 		void input();
+		SDL_Renderer* getRenderer() const;
 };
 
 

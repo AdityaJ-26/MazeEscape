@@ -1,5 +1,9 @@
 #include "Map.h"
 
+
+/* -------------------------------------------------- */
+// constructor / destructor
+/* -------------------------------------------------- */
 Map::Map(SDL_Renderer* renderer) : 
 	maze(new Maze(Constant::MAZE_SIZE)),
 	wayTexture(new Texture),
@@ -15,20 +19,23 @@ Map::~Map() {
 	delete wallTexture;
 }
 
+/* -------------------------------------------------- */
+// render
+/* -------------------------------------------------- */
 void Map::render(SDL_Renderer* renderer, Camera* camera) const {
     SDL_Rect rect;
-    rect.w = TILE_SIZE;
-    rect.h = TILE_SIZE;
+    rect.w = TILE_SIZE * camera->zoom;
+    rect.h = TILE_SIZE * camera->zoom;
 
-    int startTileX = static_cast<int>(camera->start_x / TILE_SIZE);
-    int endTileX = static_cast<int>(camera->end_x / TILE_SIZE);
-    int startTileY = static_cast<int>(camera->start_y / TILE_SIZE);
-    int endTileY = static_cast<int>(camera->end_y / TILE_SIZE);
+    int startTileX = int(camera->start_x / TILE_SIZE);
+    int endTileX = int(camera->end_x / TILE_SIZE);
+    int startTileY = int(camera->start_y / TILE_SIZE);
+    int endTileY = int(camera->end_y / TILE_SIZE);
 
     for (int y = startTileY; y <= endTileY; y++) {
         for (int x = startTileX; x <= endTileX; x++) {
-            rect.x = static_cast<int>((x * TILE_SIZE) - camera->start_x);
-            rect.y = static_cast<int>((y * TILE_SIZE) - camera->start_y);
+            rect.x = int(x * TILE_SIZE - camera->start_x ) * camera->zoom;
+            rect.y = int(y * TILE_SIZE - camera->start_y ) * camera->zoom;
 
             if (maze->cellType(y, x) == wall) {
                 SDL_RenderCopy(renderer, wallTexture->tex, nullptr, &rect);
@@ -36,6 +43,7 @@ void Map::render(SDL_Renderer* renderer, Camera* camera) const {
             else if (maze->cellType(y, x) == way) {
                 SDL_RenderCopy(renderer, wayTexture->tex, nullptr, &rect);
             }
+            
         }
     }
 }

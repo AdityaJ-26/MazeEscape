@@ -3,72 +3,78 @@
 
 #include "Bots.h"
 #include "Physics.h"
-
+#include <iostream>
 
 /* -------------------------------------------------- */
 // constructor
 /* -------------------------------------------------- */
 Bot::Bot(const float& x, const float& y) :
-	Coordinate(x, y),
-	direction(up)
-{ }
-
+	Coordinate(x, y)
+{}
 
 /* -------------------------------------------------- */
 // shortest path finding (using BFS)
 /* -------------------------------------------------- */
 void Bot::pathFind(const Maze& maze, const Coordinate& target) {
-	std::vector<Coord> directions{ {1,0}, {-1,0}, {0,1}, {0,-1} };
+	int tx;
+	int ty;
 
+	checkTarget(maze, tx, ty, target);
+
+	int bx = int((this->x - Constant::SIZE / 2) / Constant::SIZE);
+	int by = int((this->y - Constant::SIZE / 2) / Constant::SIZE);
+
+	std::queue<std::pair<int, int>> q;
 	std::vector<std::vector<bool>> visited(maze.size(), std::vector<bool>(maze.size(), false));
 	std::vector<std::vector<Coord>> parent(maze.size(), std::vector<Coord>(maze.size(), { -1, -1 }));
 
-	std::queue<Coord> q;
-	q.push({ static_cast<int>(this->y), static_cast<int>(this->x) });
-	visited[static_cast<int>(this->y)][static_cast<int>(this->x)] = true;
+	std::vector<Coord> directions{ {1, 0}, {-1, 0}, {0, 1}, {0, -1} };
+
+	q.push({ by, bx });
+	visited[by][bx] = true;
+	parent[by][bx] = { by, bx };
 
 	bool pathFound = false;
 
-	while (!q.empty() && !pathFound) {
-		Coord p = q.front();
+	while (!q.empty()) {
+		const auto c = q.front();
 		q.pop();
 
-		for (const auto& dir : directions) {
-			int X = dir.first + p.first;
-			int Y = dir.second + p.second;
-			
+		for (const Coord& dir : directions) {
+			int X = c.first + dir.first;
+			int Y = c.second + dir.second;
+
 			if (X > 0 && X < maze.size() - 1 &&
 				Y > 0 && Y < maze.size() - 1 &&
-				maze.cellType( X,Y ) != wall &&
+				maze.cellType(X, Y) != wall &&
 				visited[X][Y] == false)
 			{
 				visited[X][Y] = true;
-				parent[X][Y] = { p.first, p.second };
-
-				if (X == target.y && Y == target.x)
-				{
+				parent[X][Y] = { c.first, c.second };
+				
+				if (X == ty && Y == tx) {
 					pathFound = true;
 					break;
 				}
 				q.push({ X,Y });
 			}
+ 		}
+		if (pathFound) {
+			break;
 		}
 	}
-
 	if (pathFound) {
-		this->path.clear();
+		path.clear();
+		Coord p = { ty, tx };
 
-		Coord p = { target.y, target.x };
+		while (p.first != by || p.second != bx) {
+			const auto& temp = parent[p.first][p.second];
 
-		while (p.first != this->y || p.second != this->x) {
-			Coord nextP = parent[p.first][p.second];
-			const Direction& d = findDirection({nextP.second, nextP.first}, p);
-			path.push_back(d);
-			p = nextP;
+			path.push_back({p.second * Constant::SIZE + Constant::SIZE / 2, p.first * Constant::SIZE + Constant::SIZE / 2});
+			p = temp;
 		}
+
 	}
-	this->direction = path.back();
-	path.pop_back();
 }
 
 
@@ -76,39 +82,39 @@ void Bot::pathFind(const Maze& maze, const Coordinate& target) {
 // public functions
 /* -------------------------------------------------- */
 const Coordinate Bot::coord() const {
-	return Coordinate{ this->x, this->y };
+	return Coordinate{ x, y };
 }
 
-void Bot::move(const Maze& maze, const Coordinate& player, const float& dt) {
-	if (path.empty()) return;
+void Bot::move(const Maze& maze, const Coordinate& player, const float& deltaTime) {
+	if (path.empty()) {
+		pathFind(maze, player);
+	}
+
+	findDirection();
 
 	float newX = this->x;
 	float newY = this->y;
 
-	switch (direction) {
-		case up:
-			newY -= Constant::BOT_SPEED * dt;
+	switch (this->direction) {
+		case up:    
+			newY -= (Constant::BOT_SPEED * deltaTime);
 			break;
-		case down:
-			newY += Constant::BOT_SPEED * dt;
+		case down:  
+			newY += (Constant::BOT_SPEED * deltaTime);
 			break;
-		case left:
-			newX -= Constant::BOT_SPEED * dt;
+		case left:  
+			newX -= (Constant::BOT_SPEED * deltaTime);
 			break;
-		case right:
-			newX += Constant::BOT_SPEED * dt;
+		case right: 
+			newX += (Constant::BOT_SPEED * deltaTime);
 			break;
 	}
 
-	if (Physics::isBlocked(maze, newX, this->y) == false) {
+	if (!Physics::isBlocked(maze, newX, this->y)) {
 		this->x = newX;
 	}
-	if (Physics::isBlocked(maze, this->x, newY) == false) {
+	if (!Physics::isBlocked(maze, this->x, newY)) {
 		this->y = newY;
-	}
-
-	if (this->x != newX && this->y != newY) {
-		this->changeDirection(maze, player);
 	}
 }
 
@@ -116,28 +122,56 @@ const Direction& Bot::facing() const {
 	return this->direction;
 }
 
-Direction Bot::findDirection(const Coord& p1, const Coord& p2) const {
-	if (p1.first - 1 == p2.first) {
-		return up;
+/* -------------------------------------------------- */
+// private funcitons
+/* -------------------------------------------------- */
+void Bot::findDirection() {
+	if (path.empty()) {
+		direction = up;
+		return;
 	}
-	else if (p1.first + 1 == p2.first) {
-		return down;
+
+	Coord next = path.back();
+	float px = next.first;
+	float py = next.second;
+
+	float dx = std::fabs(this->x - px);
+	float dy = std::fabs(this->y - py);
+
+	if (dx > 2.0f) {
+		direction = (px > this->x) ? right : left;
 	}
-	else if (p1.second - 1 == p2.second) {
-		return left;
-	}
-	else if (p1.second + 1 == p2.second) {
-		return right;
+	else if (dy > 2.0f) {
+		direction = (py > this->y) ? down : up;
 	}
 	else {
-		return up;
+		path.pop_back();
+		direction = up;
 	}
 }
 
-void Bot::changeDirection(const Maze& maze, const Coordinate& player) {
-	if (path.empty()) {
-		this->pathFind(maze, player);
+
+void Bot::checkTarget(const Maze& maze, int& tx, int& ty, const Coordinate& target) const {
+	tx = int((target.x - Constant::SIZE / 2) / Constant::SIZE);
+	ty = int((target.y - Constant::SIZE / 2) / Constant::SIZE);
+
+	if (maze.cellType(ty, tx) == wall) {
+		if (maze.cellType(ty + 1, tx) == way) {
+			ty += 1;
+			return;
+		}
+		if (maze.cellType(ty - 1, tx) == way) {
+			ty -= 1;
+			return;
+		}
+		if (maze.cellType(ty, tx + 1) == way) {
+			tx += 1;
+			return;
+		}
+		if (maze.cellType(ty, tx - 1) == way) {
+			tx -= 1;
+			return;
+		}
 	}
-	this->direction = path.back();
-	path.pop_back();
 }
+

@@ -83,10 +83,10 @@ void Maze::generate() {
 /* -------------------------------------------------- */
 void Maze::setBoundary() {
 	for (int i{ 0 }; i < this->_size; i++) {
-		this->_maze[0][i] = wall;
-		this->_maze[i][0] = wall;
-		this->_maze[this->_size-1][i] = wall;
-		this->_maze[i][this->_size-1] = wall;
+		this->_maze[0][i] = boundary;
+		this->_maze[i][0] = boundary;
+		this->_maze[this->_size-1][i] = boundary;
+		this->_maze[i][this->_size-1] = boundary;
 	}
 }
 
@@ -120,8 +120,8 @@ void Maze::setStartPoint() {
 
 	std::vector<Coord> directions{ {1,0}, {-1,0}, {0,1}, {0,-1} };
 	
-	q.push({ static_cast<int>(endPoint.x), static_cast<int>(endPoint.y) });
-	distance[static_cast<int>(endPoint.x)][static_cast<int>(endPoint.y)] = 0;
+	q.push({ int(endPoint.x), int(endPoint.y) });
+	distance[int(endPoint.x)][int(endPoint.y)] = 0;
 	int maxDistance = 0;
 	
 	while (!q.empty()) {
@@ -176,7 +176,7 @@ void Maze::createLoops() {
 	std::default_random_engine engine;
 	std::uniform_int_distribution dist(1, this->_size - 1);
 
-	int removals = static_cast<int>(this->_size * this->_size * Constant::PROBABILITY_FACTOR);
+	int removals = int(this->_size * this->_size * Constant::PROBABILITY_FACTOR);
 
 	std::vector<Coord> walls;
 	for (int i{ 0 }; i < this->_size; i++) {

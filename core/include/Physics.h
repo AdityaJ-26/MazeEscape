@@ -15,10 +15,10 @@ struct Rect {
 	int right;
 
 	Rect(const float& x, const float& y) {
-		top = static_cast<int>(std::floor((y - Constant::SIZE / 2) / Constant::SIZE));
-		bottom = static_cast<int>(std::floor((y + Constant::SIZE / 2) / Constant::SIZE));
-		left = static_cast<int>(std::floor((x - Constant::SIZE / 2) / Constant::SIZE));
-		right = static_cast<int>(std::floor((x + Constant::SIZE / 2) / Constant::SIZE));
+		top = static_cast<int>(std::floor((y - Constant::SIZE) / Constant::SIZE));
+		bottom = static_cast<int>(std::floor((y - Constant::SIZE) / Constant::SIZE));
+		left = static_cast<int>(std::floor((x - Constant::SIZE) / Constant::SIZE));
+		right = static_cast<int>(std::floor((x - Constant::SIZE) / Constant::SIZE));
 	}
 };
 
@@ -31,10 +31,10 @@ namespace Physics {
 		const Coordinate& c1 = entity1->coord();
 		const Coordinate& c2 = entity2->coord();
 
-		if (c1.x + Constant::SIZE >= c2.x &&
-			c2.x + Constant::SIZE >= c1.x &&
-			c2.y + Constant::SIZE >= c1.y &&
-			c1.y + Constant::SIZE >= c2.y)
+		if ((c1.x + Constant::SIZE / 2 >= c2.x - Constant::SIZE / 2) &&
+			(c1.x - Constant::SIZE / 2 <= c2.x + Constant::SIZE / 2) &&
+			(c1.y + Constant::SIZE / 2 >= c2.y - Constant::SIZE / 2) &&
+			(c1.y - Constant::SIZE / 2 <= c2.y + Constant::SIZE / 2))
 		{
 			return true;
 		}

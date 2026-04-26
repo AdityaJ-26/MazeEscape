@@ -3,7 +3,10 @@
 
 #include <cstdint>
 
-constexpr float DISPLAY_PIXELS = 600;
+constexpr float screen_y = 1024.0f;
+constexpr float screen_x = 720.0f;
+constexpr float SIZE = 32;
+constexpr float ZOOM = 1.0f;
 
 struct Camera {
 	float start_x;
@@ -11,6 +14,7 @@ struct Camera {
 	float end_x;
 	float end_y;
 	float world_end;
+	float zoom;
 
 	Camera(const float&);
 	~Camera() = default;

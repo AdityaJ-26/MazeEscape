@@ -6,38 +6,66 @@
 #include "functions.h"
 #include "GameObject.h"
 
+constexpr int frameCap = 60;
+constexpr float frameTime = 1000.0 / frameCap;
+constexpr float animationTime = 100.0f;
+
+// Global variables
 Game* game = nullptr;
 SDL_Window* window = nullptr;
+GameMenu* gameMenu = nullptr;
 
 int main(int argc, char* argv[])
 {
+
+	// Initialisations of game elements
 	init();
 	window = window_init();
+	gameMenu = new GameMenu();
 	game = new Game(window);
-	int frame = 60;
-	double frameTime = 1000.0 / frame;
-	double start = SDL_GetTicks();
+	SDL_Renderer* renderer = game->getRenderer();
+	gameMenu->load(renderer);
 
+	// loading menu at start
+	game->render(0);
+	game->running = menuWindow(gameMenu, renderer);
+
+	// frame element intialisation
+	unsigned char currFrame = 0;
+	float start = SDL_GetTicks();
+	float frameSpeed = 0.0f;
+
+
+	// game loop
 	while (game->running == true) {
 
 		double deltaTime = SDL_GetTicks() - start;
 		start = SDL_GetTicks();
-		game->input();
 
+		//input handling
+		game->input();
+		
+		// update method requires deltaTime
 		game->update(deltaTime/1000);
+
+		// delaying to maintain 60FPS
 		if (deltaTime < frameTime) {
 			SDL_Delay(frameTime - deltaTime);
 		}
 
-		game->render();
-		game->render(1);
-		system("cls");
+		// animation updation after certain ticks
+		frameSpeed += deltaTime;
+		if (frameSpeed >= animationTime) {
+			frameSpeed -= animationTime;
+			currFrame = (currFrame + 1) % 8;
+		}
+		game->render(currFrame);
 	}
 
-	delete game;
-	SDL_DestroyWindow(window);
-	window = nullptr;
-	SDL_Quit();
+	// game over screen
+	gameOverWindow(gameMenu, game->getRenderer());
+	// memory freeing
+	quit(game, window);
 
 	return 0;
 }

@@ -1,9 +1,10 @@
 #ifndef RENDER_H
 #define RENDER_H
 
-constexpr int32_t TILE_SIZE = 32;
+constexpr float TILE_SIZE = 32.0f;
 
 #include "Textures.h"
 #include "Camera.h"
+#include "Sprites.h"
 
 #endif // ! RENDER_H

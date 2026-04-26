@@ -2,6 +2,9 @@
 
 #include "Textures.h"
 
+/* -------------------------------------------------- */
+// consturctor / desturctor
+/* -------------------------------------------------- */
 Texture::Texture() :
 	tex(nullptr)
 { }
@@ -11,6 +14,10 @@ Texture::~Texture() {
 	tex = nullptr;
 }
 
+
+/* -------------------------------------------------- */
+// load texture
+/* -------------------------------------------------- */
 void Texture::load(SDL_Renderer* renderer, const char* path) {
 	tex = IMG_LoadTexture(renderer, path);
 

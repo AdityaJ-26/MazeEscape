@@ -1,3 +1,5 @@
+#include <cmath>
+
 #include "Coordinates.h"
 
 /* -------------------------------------------------- */
@@ -14,8 +16,8 @@ Coordinate::Coordinate(const Coordinate& c)
 { }
 
 Coordinate::Coordinate(Coordinate&& c) noexcept
-	: x(c.x),
-	  y(c.y) 
+	: x(std::move(c.x)),
+	  y(std::move(c.y)) 
 { }
 
 
@@ -23,10 +25,10 @@ Coordinate::Coordinate(Coordinate&& c) noexcept
 // =, ==, != operators with rhl and lhl values
 /* -------------------------------------------------- */
 bool Coordinate::operator == (const Coordinate& c) const 
-	{ return (c.x == this->x && c.y == this->y); }
+	{ return (std::fabs(c.x - this->x < 0.1f) && std::fabs(c.y - this->y < 0.1f)); }
 
 bool Coordinate::operator == (Coordinate&& c) const 
-	{ return (c.x == this->x && c.y == this->y); }
+	{ return (std::fabs(c.x - this->x < 0.1f) && std::fabs(c.y - this->y < 0.1f)); }
 
 bool Coordinate::operator != (Coordinate&& c) const 
 	{ return (!this->operator==(c)); }
