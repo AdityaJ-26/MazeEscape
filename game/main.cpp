@@ -44,14 +44,6 @@ int main(int argc, char* argv[])
 
 		//input handling
 		game->input();
-		
-		// update method requires deltaTime
-		game->update(deltaTime/1000);
-
-		// delaying to maintain 60FPS
-		if (deltaTime < frameTime) {
-			SDL_Delay(frameTime - deltaTime);
-		}
 
 		// animation updation after certain ticks
 		frameSpeed += deltaTime;
@@ -59,11 +51,26 @@ int main(int argc, char* argv[])
 			frameSpeed -= animationTime;
 			currFrame = (currFrame + 1) % 8;
 		}
+		
+		// update method requires deltaTime
+		game->update(deltaTime/1000.0, currFrame);
+
+		// delaying to maintain 60FPS
+		if (deltaTime < frameTime) {
+			SDL_Delay(frameTime - deltaTime);
+		}
+
 		game->render(currFrame);
 	}
 
-	// game over screen
-	gameOverWindow(gameMenu, game->getRenderer());
+	// game ending screen
+	if (game->won) {
+		gameWinWindow(gameMenu, game->getRenderer());
+	}
+	else {
+		gameOverWindow(gameMenu, game->getRenderer());
+	}
+
 	// memory freeing
 	quit(game, window);
 

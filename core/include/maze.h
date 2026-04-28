@@ -13,7 +13,7 @@ class Maze {
 
 	private:
 		void generate();
-		void setBoundary();
+		void setBoundary(int);
 		void createLoops();
 		void setEndPoint();
 		void setStartPoint();

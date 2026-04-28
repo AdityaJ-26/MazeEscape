@@ -13,12 +13,13 @@ Game::Game(SDL_Window* window) :
 	entity(nullptr),
 	camera(nullptr),
 	renderer(nullptr),
-	running(true)
+	running(true),
+	won(false)
 {
 	renderer = renderer_init(window);
 	map = new Map(this->renderer);
 	player = new Player(renderer, map->maze->getStartPoint());
-	camera = new Camera((map->maze->size() - 1) * TILE_SIZE);
+	camera = new Camera((map->maze->size() * TILE_SIZE) - TILE_SIZE / 2);
 	entity = new Entity(this->renderer);
 	camera->update(player->character->coord().x, player->character->coord().y);
 	entity->spawnKeys(map, player);
@@ -40,6 +41,8 @@ void Game::input() {
 	SDL_Event event;
 
 	while (SDL_PollEvent(&event)) {
+
+		if (player->character->currentState() == hurt) break;
 
 		if (event.type == SDL_QUIT) {
 			running = false;
@@ -81,7 +84,9 @@ void Game::input() {
 /* -------------------------------------------------- */
 // Update | Processing
 /* -------------------------------------------------- */
-void Game::update(const double& deltaTime) {
+void Game::update(const double& deltaTime, const int& frame) {
+	player->updateTimer(deltaTime * 1000);
+
 	if (player->character->livesCount() == 0) {
 		this->running = false;
 	}
@@ -108,6 +113,7 @@ void Game::update(const double& deltaTime) {
 			int((p.x - Constant::SIZE / 2) / Constant::SIZE) - map->maze->getEndPoint().y <= 0.1f &&
 			int((p.y - Constant::SIZE / 2) / Constant::SIZE) - map->maze->getEndPoint().x <= 0.1f)
 		{
+			this->won = true;
 			this->running = false;
 		}
 	}
@@ -129,7 +135,7 @@ void Game::update(const double& deltaTime) {
 
 		if (entity->distance(bot->coord(), player->character->coord()) < COLLISION_CHECK_DISTANCE) {
 			if (Physics::collision(bot, player->character)) {
-				player->character->hit();
+				player->update(hurt);
 			}
 		}
 	}

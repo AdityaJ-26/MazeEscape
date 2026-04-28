@@ -71,6 +71,25 @@ void gameOverWindow(GameMenu* gameMenu, SDL_Renderer* renderer) {
 	}
 }
 
+void gameWinWindow(GameMenu* gameMenu, SDL_Renderer* renderer) {
+	SDL_Event e;
+	while (true) {
+		SDL_RenderClear(renderer);
+		gameMenu->renderWin(renderer);
+		while (SDL_PollEvent(&e)) {
+			if (e.type == SDL_QUIT) {
+				return;
+			}
+			else if (e.type == SDL_KEYDOWN) {
+				if (e.key.keysym.sym == SDLK_RETURN) {
+					return;
+				}
+			}
+		}
+		SDL_RenderPresent(renderer);
+	}
+}
+
 void quit(Game* game, SDL_Window* window) {
 	delete game;
 	game = nullptr;

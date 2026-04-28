@@ -81,3 +81,7 @@ void Character::hit() {
 const int& Character::livesCount() const {
 	return this->lives;
 }
+
+const int& Character::keyCount() const {
+	return this->keyCollected;
+}

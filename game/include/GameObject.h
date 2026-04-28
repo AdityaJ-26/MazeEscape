@@ -18,12 +18,13 @@ class Game {
 		SDL_Renderer* renderer_init(SDL_Window*);
 
 	public:
+		bool won;
 		bool running;
 
 	public:
 		Game(SDL_Window* window);
 		~Game();
-		void update(const double&);
+		void update(const double&, const int&);
 		void render(const unsigned char&) const;
 		void input();
 		SDL_Renderer* getRenderer() const;

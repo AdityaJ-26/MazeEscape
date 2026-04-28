@@ -81,12 +81,12 @@ void Maze::generate() {
 /* -------------------------------------------------- */
 // Boundary Creation
 /* -------------------------------------------------- */
-void Maze::setBoundary() {
+void Maze::setBoundary(int cell) {
 	for (int i{ 0 }; i < this->_size; i++) {
-		this->_maze[0][i] = boundary;
-		this->_maze[i][0] = boundary;
-		this->_maze[this->_size-1][i] = boundary;
-		this->_maze[i][this->_size-1] = boundary;
+		this->_maze[0][i] = cell;
+		this->_maze[i][0] = cell;
+		this->_maze[this->_size-1][i] = cell;
+		this->_maze[i][this->_size-1] = cell;
 	}
 }
 
@@ -203,11 +203,12 @@ void Maze::createLoops() {
 // maze/level creation
 /* -------------------------------------------------- */
 void Maze::createLevel() {
-	setBoundary();
+	setBoundary(-1);
 	generate();
 	setEndPoint();
 	createLoops();
 	setStartPoint();
+	setBoundary(0);
 }
 
 

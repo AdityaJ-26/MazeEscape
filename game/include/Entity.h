@@ -6,7 +6,7 @@
 constexpr float MIN_DISTANCE = 320.0f;
 constexpr float COLLISION_CHECK_DISTANCE = 96.0f;
 constexpr float KEY_SPAWN_DISTANCE = 250.0f;
-constexpr const char* KEY_SPRITE_PATH = "../assets/key.png";
+constexpr const char* KEY_SPRITE_PATH = "../assets/keys.png";
 constexpr const char* BOT_SPRITE_PATH = "../assets/bot.png";
 
 #include "Core.h"

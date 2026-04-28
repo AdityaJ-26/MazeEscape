@@ -15,6 +15,7 @@ SDL_Window* window_init();
 
 bool menuWindow(GameMenu*, SDL_Renderer*);
 void gameOverWindow(GameMenu*, SDL_Renderer*);
+void gameWinWindow(GameMenu*, SDL_Renderer*);
 void quit(Game*, SDL_Window*);
 
 #endif // !FUNCTIONS_H

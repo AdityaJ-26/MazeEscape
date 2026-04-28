@@ -110,11 +110,18 @@ void Bot::move(const Maze& maze, const Coordinate& player, const float& deltaTim
 			break;
 	}
 
+	bool moved = false;
 	if (!Physics::isBlocked(maze, newX, this->y)) {
 		this->x = newX;
+		moved = true;
 	}
 	if (!Physics::isBlocked(maze, this->x, newY)) {
 		this->y = newY;
+		moved = true;
+	}
+
+	if (!moved) {
+		this->pathFind(maze, player);
 	}
 }
 
@@ -127,7 +134,6 @@ const Direction& Bot::facing() const {
 /* -------------------------------------------------- */
 void Bot::findDirection() {
 	if (path.empty()) {
-		direction = up;
 		return;
 	}
 
@@ -138,15 +144,20 @@ void Bot::findDirection() {
 	float dx = std::fabs(this->x - px);
 	float dy = std::fabs(this->y - py);
 
-	if (dx > 2.0f) {
+	if (dx <= 1.0f && dy <= 1.0f) {
+		this->x = px;
+		this->y = py;
+		path.pop_back();
+		return;
+	}
+
+	if (dx > dy) {
+		this->y = py;
 		direction = (px > this->x) ? right : left;
 	}
-	else if (dy > 2.0f) {
-		direction = (py > this->y) ? down : up;
-	}
 	else {
-		path.pop_back();
-		direction = up;
+		this->x = px;
+		direction = (py > this->y) ? down : up;
 	}
 }
 

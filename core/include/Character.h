@@ -24,6 +24,7 @@ class Character : private Coordinate {
 		void collectKey();
 		bool canUnlock() const;
 		const int& livesCount() const;
+		const int& keyCount() const;
 };
 
 #endif // PLAYER_H
