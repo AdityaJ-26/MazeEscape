@@ -6,7 +6,7 @@
 constexpr float screen_y = 1024.0f;
 constexpr float screen_x = 720.0f;
 constexpr float SIZE = 32;
-constexpr float ZOOM = 1.5f;
+constexpr float ZOOM = 1.25f;
 
 struct Camera {
 	float start_x;

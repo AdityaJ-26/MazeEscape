@@ -16,7 +16,7 @@ namespace Constant{
 	constexpr float SIZE = 32;
 
 	constexpr unsigned char PLAYER_DISTANCE = 30;
-	constexpr float BOT_SPEED = 75.0f;
+	constexpr float BOT_SPEED = 100.0f;
 
 	constexpr float SPEED = 150.0f;
 }
