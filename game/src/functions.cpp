@@ -46,6 +46,9 @@ bool menuWindow(GameMenu* gameMenu, SDL_Renderer* renderer) {
 				if (e.key.keysym.sym == SDLK_RETURN) {
 					return true;
 				}
+				else if (e.key.keysym.sym == SDLK_ESCAPE) {
+					return false;
+				}
 			}
 		}
 		SDL_RenderPresent(renderer);
